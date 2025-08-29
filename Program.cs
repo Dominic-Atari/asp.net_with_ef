@@ -31,4 +31,12 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
+// Automatically create database and apply migrations at startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    //db.Database.EnsureDeleted();   // This will drop the database
+    db.Database.Migrate();         // This will recreate it and apply migrations
+}
+
 app.Run();
