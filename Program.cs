@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using MyApp.Data;
 using MyApp.Services;
+using MyApp.Service;
+using MyApp.Service.Sirvices;
 using Microsoft.OpenApi.Models;
 using Pomelo.EntityFrameworkCore.MySql;
 
@@ -9,13 +11,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 // MySQL connection
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.Parse("8.0.33-mysql")));
 
-// Register service
-builder.Services.AddScoped<IProductService, ProductService>();
 
-builder.Services.AddControllers();
+// Register services
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IStoreService, StoreService>();
+builder.Services.AddAuthorization();
+builder.Services.AddControllers(); // <-- This line is required
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
